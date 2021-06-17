@@ -32,7 +32,12 @@ select count(*) from likes where to_user_id in
 4. Определить кто больше поставил лайков (всего) - мужчины или женщины?
 */
 
-select if(right(max(concat(length(tbl.n_likes),tbl.n_likes,gender)),1)='f', 'женщины', 'мужчины') from (select gender, sum((select count(from_user_id) from likes where user_id=from_user_id )) n_likes from profiles p where gender in ('f','m') group by gender) tbl;
+/*
+concat(character(length(tbl.n_likes)+ord('a')),tbl.n_likes,gender)
+Здесь крайне маловероятно, что число будет длиннее, чем 26 цифр
+*/
+select if(right(max(concat(character(length(tbl.n_likes)+ord('a')),tbl.n_likes,gender)),1)='f', 'female', 'male') from 
+(select gender, sum((select count(from_user_id) from likes where user_id=from_user_id )) n_likes from profiles p where gender in ('f','m') group by gender) tbl;
 
 
 /*
